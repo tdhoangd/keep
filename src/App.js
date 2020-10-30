@@ -6,6 +6,7 @@ import CreateNote from "./component/create-note/create-note";
 class App extends Component {
   render() {
     console.log(process.env.REACT_APP_FB_AUTH);
+    console.log(process.env.REACT_APP_FB_EXAMPLE);
 
     return (
       <div className={'App'}>
