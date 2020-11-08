@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
-import 'firebase/database';
+import "firebase/firestore";
+import "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FB_API_KEY,
@@ -13,16 +14,35 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-const database = firebase.database();
+export const createNote = (title, content) => {
+  return db.collection('notes')
+    .add({
+      createdOn: firebase.firestore.FieldValue.serverTimestamp(),
+      title: title,
+      content: content
+    });
+};
 
-export { database };
+export const fetchNotes = () => {
+  return db.collection('notes')
+    .orderBy('createdOn', 'desc')
+    .get();
+};
 
+export const deleteNote = (uid) => {
+  return db.collection('notes')
+    .doc(`${uid}`)
+    .delete();
+};
 
-
-
-
-
-
-
-
+export const updateNote = (uid, title, content) => {
+  return db.collection('notes')
+    .doc(`${uid}`)
+    .set({
+      createdOn: firebase.firestore.FieldValue.serverTimestamp(),
+      title: title,
+      content: content,
+    });
+};

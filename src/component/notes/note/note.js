@@ -1,37 +1,33 @@
-import React, { Component } from 'react';
+import React  from 'react';
 
 import './note.scss';
 import { ReactComponent as EditIcon } from '../../../assets/pen.svg';
 
-class Note extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showEditLogo: false
-    }
+function Note (props) {
+  const [inHover, setHover] = React.useState(false);
+
+  function editNote(note) {
+    props.handleEnableEditNote((prev) => {
+      return note;
+    });
   }
 
-  setShowEditLogo = (b) => {
-    this.setState({ showEditLogo: b })
-  }
-
-  render() {
-    return (
-      <div
-        className={'note'}
-        onMouseEnter={() => this.setShowEditLogo(true)}
-        onMouseLeave={() => this.setShowEditLogo(false)}
-      >
-        <EditIcon className={`edit-icon ${this.state.showEditLogo? "" : "hidden" }`} />
-        <div>
-          <h1>{this.props.note.title}</h1>
-          <pre className={'prev-wrap'}>{this.props.note.content}</pre>
-        </div>
-
+  return (
+    <div
+      className={'note'}
+      onClick={() => editNote(props.note)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <EditIcon className={`edit-icon ${inHover? "" : "hidden" }`} />
+      <div>
+        <h1>{props.note.title}</h1>
+        <pre className={'prev-wrap'}>{props.note.content}</pre>
       </div>
-    );
-  }
+
+    </div>
+  );
 }
 
-export default Note;
 
+export default Note;

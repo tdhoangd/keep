@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 import './create-note.scss';
 import TextareaAutosize from 'react-textarea-autosize';
-import { creatNote } from "../../firebase/db";
+
+import * as FirestoreService from '../../firebase/firebase';
 
 class CreateNote extends Component {
 
@@ -21,22 +22,21 @@ class CreateNote extends Component {
   };
 
   handleChangeOnContent = (e) => {
-    this.setState({content: e.target.value});
+    this.setState({ content: e.target.value });
   }
 
   handleChangeOnTitle = (e) => {
-    // e.preventDefault();
-    this.setState({title: e.target.value});
+    e.preventDefault();
+    this.setState({ title: e.target.value });
   }
 
   handleSubmitNote = async () => {
     if (this.state.content !== '' || this.state.title !== '') {
-      const note = await creatNote(
-        this.state.title,
-        this.state.content,
-        Date.now()
-      );
-      console.log(note);
+      FirestoreService.createNote(this.state.title, this.state.content)
+        .then(ret => {
+          this.props.handleAddNewNote();
+        })
+        .catch(() => console.log('ERROR'));
     }
 
     this.setState({
@@ -79,10 +79,12 @@ class CreateNote extends Component {
         <button className={'note-button'}
                 type={'submit'}
                 onClick={this.handleSubmitNote}
-        >+</button>
+        >+
+        </button>
       </div>
     );
   }
 }
 
 export default CreateNote;
+
